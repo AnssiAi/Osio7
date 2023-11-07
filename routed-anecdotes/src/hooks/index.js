@@ -7,7 +7,8 @@ export const useField = (type) => {
       setValue(event.target.value)
     }
 
-    const reset = (event) => {
+    //Nimetty onReset varoituksen välttämiseksi input komponentin kanssa
+    const onReset = (event) => {
         setValue('')
     }
   
@@ -15,6 +16,6 @@ export const useField = (type) => {
       type,
       value,
       onChange,
-      reset
+      onReset
     }
   }
