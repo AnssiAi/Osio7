@@ -1,0 +1,116 @@
+{
+  "notes": [
+    {
+      "id": 1,
+      "content": "custom-hooks are awesome!"
+    },
+    {
+      "id": 2,
+      "content": "best feature ever <3"
+    },
+    {
+      "content": "haha juttui",
+      "id": 3
+    },
+    {
+      "content": "ei päivity",
+      "id": 4
+    },
+    {
+      "content": "entä nyt",
+      "id": 5
+    },
+    {
+      "content": "judui",
+      "id": 6
+    },
+    {
+      "content": "lisää judui",
+      "id": 7
+    },
+    {
+      "content": "uudestaan",
+      "id": 8
+    },
+    {
+      "content": "ei päivity enää",
+      "id": 9
+    },
+    {
+      "content": "mutta nyt?",
+      "id": 10
+    },
+    {
+      "content": "kukkuu",
+      "id": 11
+    },
+    {
+      "content": "jahuu",
+      "id": 12
+    },
+    {
+      "content": "kukkuu",
+      "id": 13
+    },
+    {
+      "content": "ny?",
+      "id": 14
+    },
+    {
+      "content": "joo",
+      "id": 15
+    }
+  ],
+  "persons": [
+    {
+      "id": 1,
+      "name": "mluukkai",
+      "number": "040-5483923"
+    },
+    {
+      "id": 2,
+      "name": "hellas",
+      "number": "012-123123"
+    },
+    {
+      "name": "joku",
+      "number": "234234234",
+      "id": 3
+    },
+    {
+      "name": "kalle",
+      "number": "12312435",
+      "id": 4
+    },
+    {
+      "name": "Jaana",
+      "number": "56756887",
+      "id": 5
+    },
+    {
+      "name": "nimi",
+      "number": "2342342342",
+      "id": 6
+    },
+    {
+      "name": "jukka",
+      "number": "89789789",
+      "id": 7
+    },
+    {
+      "name": "Kiira",
+      "number": "5675678",
+      "id": 8
+    },
+    {
+      "name": "tiina",
+      "number": "35345345",
+      "id": 9
+    },
+    {
+      "name": "erkki",
+      "number": "75673452",
+      "id": 10
+    }
+  ]
+}
