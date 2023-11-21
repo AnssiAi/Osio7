@@ -1,22 +1,43 @@
-import PropTypes from 'prop-types'
-import { useState } from 'react'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { createNew } from '../services/blogs'
+import { useNotificationDispatch } from './NotificationContext'
 
-const CreateBlogForm = ({ addBlog }) => {
-  const [newTitle, setNewTitle] = useState('')
-  const [newAuthor, setNewAuthor] = useState('')
-  const [newUrl, setNewUrl] = useState('')
+const CreateBlogForm = () => {
+  const dispatch = useNotificationDispatch()
+  const queryClient = useQueryClient()
+
+  const newBlogMutation = useMutation({
+    mutationFn: createNew,
+    onError: () => {
+      dispatch({
+        type: 'SHOW',
+        payload: 'unable to create blog',
+      })
+      setTimeout(() => {
+        dispatch({ type: 'CLEAR' })
+      }, 5000)
+    },
+    onSuccess: (response) => {
+      queryClient.invalidateQueries({ queryKey: ['blogs'] })
+      dispatch({
+        type: 'SHOW',
+        payload: `new blog ${response.title} by ${response.author} created`,
+      })
+      setTimeout(() => {
+        dispatch({ type: 'CLEAR' })
+      }, 5000)
+    },
+  })
 
   const createNewBlog = (event) => {
     event.preventDefault()
-    addBlog({
-      title: newTitle,
-      author: newAuthor,
-      url: newUrl,
-    })
-
-    setNewTitle('')
-    setNewAuthor('')
-    setNewUrl('')
+    const title = event.target.title.value
+    const author = event.target.author.value
+    const url = event.target.url.value
+    event.target.title.value = ''
+    event.target.author.value = ''
+    event.target.url.value = ''
+    newBlogMutation.mutate({ title, author, url, votes: 0 })
   }
 
   return (
@@ -25,30 +46,15 @@ const CreateBlogForm = ({ addBlog }) => {
       <form id='blog_form' onSubmit={createNewBlog}>
         <div>
           title:
-          <input
-            value={newTitle}
-            onChange={(event) => setNewTitle(event.target.value)}
-            id='title'
-            type='text'
-          />
+          <input name='title' />
         </div>
         <div>
           author:
-          <input
-            value={newAuthor}
-            onChange={(event) => setNewAuthor(event.target.value)}
-            id='author'
-            type='text'
-          />
+          <input name='author' />
         </div>
         <div>
           url:
-          <input
-            value={newUrl}
-            onChange={(event) => setNewUrl(event.target.value)}
-            id='url'
-            type='text'
-          />
+          <input name='url' />
         </div>
         <button id='create-btn' type='submit'>
           create
@@ -56,10 +62,6 @@ const CreateBlogForm = ({ addBlog }) => {
       </form>
     </div>
   )
-}
-
-CreateBlogForm.propTypes = {
-  addBlog: PropTypes.func.isRequired,
 }
 
 export default CreateBlogForm

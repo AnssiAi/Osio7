@@ -1,46 +1,62 @@
 import { useState, useEffect, useRef } from 'react'
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
+import {
+  getAll,
+  createNew,
+  setToken,
+  update,
+  removeBlog,
+} from './services/blogs'
 import { useNotificationDispatch } from './components/NotificationContext'
 
 import Blog from './components/Blog'
 import loginService from './services/login'
-import blogService from './services/blogs'
 import Notification from './components/Notification'
 import CreateBlogForm from './components/CreateBlogForm'
 import Togglable from './components/Togglable'
 
 const App = () => {
-  const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
 
+  const queryClient = useQueryClient()
   const dispatch = useNotificationDispatch()
-
-  useEffect(() => {
-    blogService.getAll().then((foundblogs) => {
-      setBlogs(sortBlogArray(foundblogs))
-    })
-  }, [])
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedNoteappUser')
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
       setUser(user)
-      blogService.setToken(user.token)
+      setToken(user.token)
     }
   }, [])
 
+  const blogFormRef = useRef()
+
+  //Haetaan blogit palvelimelta
+  const result = useQuery({
+    queryKey: ['blogs'],
+    queryFn: getAll,
+    retry: 1,
+    refetchOnWindowFocus: false,
+  })
+  //Viestit odottaessa ja virheen tapahtuessa
+  if (result.isPending) {
+    return <span>Loading data</span>
+  }
+  if (result.isError) {
+    return <span>blog service not available due to server problem</span>
+  }
+  //Haetut blogit
+  const blogs = result.data
+
+  //Notifikaatioiden dispatch keskitetty tähän funktioon
   const sendDispatch = (message) => {
     dispatch({ type: 'SHOW', payload: message })
     setTimeout(() => {
       dispatch({ type: 'CLEAR' })
     }, 5000)
-  }
-
-  const sortBlogArray = (array) => {
-    return array.sort((a, b) => b.likes - a.likes)
   }
 
   const handleLogin = async (event) => {
@@ -53,7 +69,7 @@ const App = () => {
       })
 
       window.localStorage.setItem('loggedNoteappUser', JSON.stringify(user))
-      blogService.setToken(user.token)
+      setToken(user.token)
 
       setUser(user)
       setUsername('')
@@ -70,12 +86,12 @@ const App = () => {
     window.location.reload()
   }
 
+  /*
   const addBlog = (blogObject) => {
     blogFormRef.current.toggleVisibility()
-    blogService
-      .createNew(blogObject)
+    createNew(blogObject)
       .then(() => {
-        blogService.getAll().then((foundblogs) => {
+        getAll().then((foundblogs) => {
           setBlogs(sortBlogArray(foundblogs))
         })
         sendDispatch(
@@ -88,7 +104,9 @@ const App = () => {
     //Tyhjennä form
     document.getElementById('blog_form').reset()
   }
+  */
 
+  /*
   const updLikes = (event, object) => {
     event.preventDefault()
 
@@ -99,8 +117,8 @@ const App = () => {
 
     const id = newBlog.id
 
-    blogService.update(id, newBlog).then(() => {
-      blogService.getAll().then((foundblogs) => {
+    update(id, newBlog).then(() => {
+      getAll().then((foundblogs) => {
         setBlogs(sortBlogArray(foundblogs))
       })
     })
@@ -110,7 +128,7 @@ const App = () => {
     event.preventDefault()
 
     if (window.confirm('Remove this blog?')) {
-      blogService.removeBlog(id).then((response) => {
+      removeBlog(id).then((response) => {
         console.log(response)
 
         blogService.getAll().then((foundblogs) => {
@@ -120,8 +138,7 @@ const App = () => {
       sendDispatch('Blog removed')
     }
   }
-
-  const blogFormRef = useRef()
+  */
 
   if (user === null) {
     return (
@@ -163,13 +180,12 @@ const App = () => {
       <Notification />
 
       <h2>blogs</h2>
-      <>
-        <p>logged in as: {user.username}</p>
-        <button onClick={() => handleLogout()}>logout</button>
-      </>
+
+      <p>logged in as: {user.username}</p>
+      <button onClick={() => handleLogout()}>logout</button>
 
       <Togglable buttonLabel='create new' ref={blogFormRef}>
-        <CreateBlogForm addBlog={addBlog} />
+        <CreateBlogForm />
       </Togglable>
 
       <br />
@@ -178,8 +194,8 @@ const App = () => {
         <Blog
           key={blog.id}
           blog={blog}
-          updLikes={updLikes}
-          delBlog={delBlog}
+          //updLikes={updLikes}
+          //delBlog={delBlog}
           user={user.username}
         />
       ))}
