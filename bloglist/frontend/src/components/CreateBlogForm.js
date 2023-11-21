@@ -37,7 +37,7 @@ const CreateBlogForm = () => {
     event.target.title.value = ''
     event.target.author.value = ''
     event.target.url.value = ''
-    newBlogMutation.mutate({ title, author, url, votes: 0 })
+    newBlogMutation.mutate({ title, author, url, likes: 0 })
   }
 
   return (

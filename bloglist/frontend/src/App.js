@@ -1,12 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
-import {
-  getAll,
-  createNew,
-  setToken,
-  update,
-  removeBlog,
-} from './services/blogs'
+import { getAll, setToken } from './services/blogs'
 import { useNotificationDispatch } from './components/NotificationContext'
 
 import Blog from './components/Blog'
@@ -86,60 +80,6 @@ const App = () => {
     window.location.reload()
   }
 
-  /*
-  const addBlog = (blogObject) => {
-    blogFormRef.current.toggleVisibility()
-    createNew(blogObject)
-      .then(() => {
-        getAll().then((foundblogs) => {
-          setBlogs(sortBlogArray(foundblogs))
-        })
-        sendDispatch(
-          `new blog ${blogObject.title} by ${blogObject.author} created`
-        )
-      })
-      .catch((error) => {
-        sendDispatch('failed to create a new blog')
-      })
-    //Tyhjennä form
-    document.getElementById('blog_form').reset()
-  }
-  */
-
-  /*
-  const updLikes = (event, object) => {
-    event.preventDefault()
-
-    const newBlog = {
-      ...object,
-      likes: object.likes + 1,
-    }
-
-    const id = newBlog.id
-
-    update(id, newBlog).then(() => {
-      getAll().then((foundblogs) => {
-        setBlogs(sortBlogArray(foundblogs))
-      })
-    })
-  }
-
-  const delBlog = (event, id) => {
-    event.preventDefault()
-
-    if (window.confirm('Remove this blog?')) {
-      removeBlog(id).then((response) => {
-        console.log(response)
-
-        blogService.getAll().then((foundblogs) => {
-          setBlogs(sortBlogArray(foundblogs))
-        })
-      })
-      sendDispatch('Blog removed')
-    }
-  }
-  */
-
   if (user === null) {
     return (
       <div>
@@ -191,13 +131,7 @@ const App = () => {
       <br />
 
       {blogs.map((blog) => (
-        <Blog
-          key={blog.id}
-          blog={blog}
-          //updLikes={updLikes}
-          //delBlog={delBlog}
-          user={user.username}
-        />
+        <Blog key={blog.id} blog={blog} user={user.username} />
       ))}
     </div>
   )
