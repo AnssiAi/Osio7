@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useNotificationDispatch } from './NotificationContext'
-import { updateBlog, removeBlog } from '../services/blogs'
+import { updateBlog, removeBlog } from '../services/blogService'
 
 const Blog = ({ blog, user }) => {
   const blogStyle = {

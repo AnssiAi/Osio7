@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { createNew } from '../services/blogs'
+import { createNew } from '../services/blogService'
 import { useNotificationDispatch } from './NotificationContext'
 
 const CreateBlogForm = () => {

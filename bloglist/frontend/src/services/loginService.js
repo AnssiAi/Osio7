@@ -6,5 +6,10 @@ const login = async (credentials) => {
   return response.data
 }
 
-export default { login }
+const logout = (event) => {
+  window.localStorage.removeItem('loggedNoteappUser')
+  window.location.reload()
+}
+
+export { login, logout }
 
