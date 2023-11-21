@@ -1,4 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
+import { useQuery } from '@tanstack/react-query'
+import { useNotificationDispatch } from './components/NotificationContext'
+
 import Blog from './components/Blog'
 import loginService from './services/login'
 import blogService from './services/blogs'
@@ -11,11 +14,11 @@ const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  const [message, setMessage] = useState('')
-  const [messageType, setMessageType] = useState('')
+
+  const dispatch = useNotificationDispatch()
 
   useEffect(() => {
-    blogService.getAll().then(foundblogs => {
+    blogService.getAll().then((foundblogs) => {
       setBlogs(sortBlogArray(foundblogs))
     })
   }, [])
@@ -29,8 +32,14 @@ const App = () => {
     }
   }, [])
 
-  const sortBlogArray = (array) => {
+  const sendDispatch = (message) => {
+    dispatch({ type: 'SHOW', payload: message })
+    setTimeout(() => {
+      dispatch({ type: 'CLEAR' })
+    }, 5000)
+  }
 
+  const sortBlogArray = (array) => {
     return array.sort((a, b) => b.likes - a.likes)
   }
 
@@ -39,118 +48,76 @@ const App = () => {
 
     try {
       const user = await loginService.login({
-        username, password
+        username,
+        password,
       })
 
-      window.localStorage.setItem(
-        'loggedNoteappUser', JSON.stringify(user)
-      )
+      window.localStorage.setItem('loggedNoteappUser', JSON.stringify(user))
       blogService.setToken(user.token)
 
       setUser(user)
       setUsername('')
       setPassword('')
 
-      setMessage(`logged in as ${user.username}`)
-      setMessageType('valid')
-      setTimeout(() => {
-        setMessage('')
-        setMessageType('')
-      }, 5000)
-
+      sendDispatch(`logged in as ${user.username}`)
     } catch (exception) {
-
-      setMessage('wrong username or password')
-      setMessageType('error')
-      setTimeout(() => {
-        setMessage('')
-        setMessageType('')
-      }, 5000)
+      sendDispatch('wrong username or password')
     }
   }
 
   const handleLogout = (event) => {
-
     window.localStorage.removeItem('loggedNoteappUser')
     window.location.reload()
-
   }
 
   const addBlog = (blogObject) => {
-    //event.preventDefault()
-
-    //Lomakkeen data talteen
-    //const data = new FormData(event.target)
-
-    //Parsitaan objekti datasta
-    //const newBlog = Object.fromEntries(data.entries())
-
     blogFormRef.current.toggleVisibility()
-    blogService.createNew(blogObject)
+    blogService
+      .createNew(blogObject)
       .then(() => {
-        //populate tapahtuu get all kutsulla
-        //haetaan tietokannasta concat sijasta? - Toimii, hyvä tapa?
-        blogService.getAll().then(foundblogs => {
+        blogService.getAll().then((foundblogs) => {
           setBlogs(sortBlogArray(foundblogs))
         })
-
-        setMessage(`new blog ${blogObject.title} by ${blogObject.author} created`)
-        setMessageType('valid')
-        setTimeout(() => {
-          setMessage('')
-          setMessageType('')
-        }, 5000)
+        sendDispatch(
+          `new blog ${blogObject.title} by ${blogObject.author} created`
+        )
       })
-      .catch( error => {
-        setMessage('failed to create a new blog')
-        setMessageType('error')
-        setTimeout(() => {
-          setMessage('')
-          setMessageType('')
-        }, 5000)
+      .catch((error) => {
+        sendDispatch('failed to create a new blog')
       })
-      //Tyhjennä form
+    //Tyhjennä form
     document.getElementById('blog_form').reset()
   }
 
   const updLikes = (event, object) => {
     event.preventDefault()
-    //Mistä se blogi, jonka nappia painettu?
+
     const newBlog = {
       ...object,
-      likes: object.likes + 1
+      likes: object.likes + 1,
     }
 
     const id = newBlog.id
 
-    blogService.update(id,newBlog)
-      .then(() => {
-        blogService.getAll().then(foundblogs => {
-          setBlogs(sortBlogArray(foundblogs))
-        })
+    blogService.update(id, newBlog).then(() => {
+      blogService.getAll().then((foundblogs) => {
+        setBlogs(sortBlogArray(foundblogs))
       })
+    })
   }
 
   const delBlog = (event, id) => {
     event.preventDefault()
 
     if (window.confirm('Remove this blog?')) {
-      blogService.removeBlog(id)
-        .then(response => {
+      blogService.removeBlog(id).then((response) => {
+        console.log(response)
 
-          console.log(response)
-
-          blogService.getAll().then(foundblogs => {
-            setBlogs(sortBlogArray(foundblogs))
-          })
+        blogService.getAll().then((foundblogs) => {
+          setBlogs(sortBlogArray(foundblogs))
         })
-
-      setMessage('Blog removed')
-      setMessageType('valid')
-      setTimeout(() => {
-        setMessage('')
-        setMessageType('')
-      }, 5000)
+      })
+      sendDispatch('Blog removed')
     }
   }
 
@@ -159,31 +126,33 @@ const App = () => {
   if (user === null) {
     return (
       <div>
-        <Notification message={message} type = {messageType}/>
+        <Notification />
 
         <h2>Log in to application</h2>
         <form onSubmit={handleLogin}>
           <div>
-          username
+            username
             <input
               id='username'
-              type="text"
+              type='text'
               value={username}
-              name="Username"
+              name='Username'
               onChange={({ target }) => setUsername(target.value)}
             />
           </div>
           <div>
-          password
+            password
             <input
               id='password'
-              type="password"
+              type='password'
               value={password}
-              name="Password"
+              name='Password'
               onChange={({ target }) => setPassword(target.value)}
             />
           </div>
-          <button id='login-btn' type="submit">login</button>
+          <button id='login-btn' type='submit'>
+            login
+          </button>
         </form>
       </div>
     )
@@ -191,26 +160,32 @@ const App = () => {
 
   return (
     <div>
-
-      <Notification message={message} type = {messageType}/>
+      <Notification />
 
       <h2>blogs</h2>
       <>
         <p>logged in as: {user.username}</p>
-        <button onClick = {() => handleLogout()}>logout</button>
+        <button onClick={() => handleLogout()}>logout</button>
       </>
 
       <Togglable buttonLabel='create new' ref={blogFormRef}>
-        <CreateBlogForm addBlog = {addBlog}/>
+        <CreateBlogForm addBlog={addBlog} />
       </Togglable>
 
-      <br/>
+      <br />
 
-      {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} updLikes={updLikes} delBlog = {delBlog} user={user.username}/>
-      )}
+      {blogs.map((blog) => (
+        <Blog
+          key={blog.id}
+          blog={blog}
+          updLikes={updLikes}
+          delBlog={delBlog}
+          user={user.username}
+        />
+      ))}
     </div>
   )
 }
 
 export default App
+

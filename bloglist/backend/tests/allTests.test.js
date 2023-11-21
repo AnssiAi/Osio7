@@ -7,12 +7,10 @@ test('dummy returns one', () => {
 })
 
 describe('total likes', () => {
-
   test('of empty list is zero', () => {
     const result = listHelper.totalLikes(helper.listWithZero)
     expect(result).toBe(0)
   })
-
 
   test('when list has only one blog equal the likes of that', () => {
     const result = listHelper.totalLikes(helper.listWithOne)
@@ -30,7 +28,7 @@ describe('favorite blog', () => {
     const testFavorite = {
       title: 'Canonical string reduction',
       author: 'Edsger W. Dijkstra',
-      likes: 12
+      likes: 12,
     }
 
     const result = listHelper.favoriteBlog(helper.testBlogs)
@@ -43,7 +41,7 @@ describe('most blogs', () => {
   test('author with most blogs', () => {
     const testCase = {
       author: 'Robert C. Martin',
-      blogs: 3
+      blogs: 3,
     }
 
     const result = listHelper.mostBlogs(helper.testBlogs)
@@ -56,7 +54,7 @@ describe('most likes', () => {
   test('author with most likes', () => {
     const testCase = {
       author: 'Edsger W. Dijkstra',
-      likes: 17
+      likes: 17,
     }
 
     const result = listHelper.mostLikes(helper.testBlogs)
@@ -64,3 +62,4 @@ describe('most likes', () => {
     expect(result).toEqual(testCase)
   })
 })
+

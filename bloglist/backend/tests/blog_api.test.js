@@ -59,11 +59,9 @@ describe('blogs api', () => {
 
       const blogs = await helper.blogsInDb()
 
-      const titles = blogs.map(r => r.title)
+      const titles = blogs.map((r) => r.title)
 
-      expect(titles).toContain(
-        modifiedBlog.title
-      )
+      expect(titles).toContain(modifiedBlog.title)
     })
 
     describe('a new blog', () => {
@@ -84,13 +82,11 @@ describe('blogs api', () => {
 
         const blogs = await helper.blogsInDb()
 
-        expect(blogs).toHaveLength(helper.testBlogs.length+1)
+        expect(blogs).toHaveLength(helper.testBlogs.length + 1)
 
-        const titles = blogs.map(r => r.title)
+        const titles = blogs.map((r) => r.title)
 
-        expect(titles).toContain(
-          blog.title
-        )
+        expect(titles).toContain(blog.title)
       })
 
       test('has likes initialized to 0 if initial value is not given', async () => {
@@ -176,9 +172,7 @@ describe('blogs api', () => {
     test('can not be deleted without valid auth header', async () => {
       const blogsBefore = await helper.blogsInDb()
 
-      await api
-        .delete(`/api/blogs/${id}`)
-        .expect(401)
+      await api.delete(`/api/blogs/${id}`).expect(401)
 
       const blogsAfter = await helper.blogsInDb()
 
@@ -190,7 +184,7 @@ describe('blogs api', () => {
     test('succeeds with valid username and password', async () => {
       const user = {
         username: 'mluukkai',
-        password: 'secret'
+        password: 'secret',
       }
 
       const response = await api
@@ -202,16 +196,14 @@ describe('blogs api', () => {
       const users = await helper.usersInDb()
 
       expect(users).toHaveLength(2)
-      const usernames = users.map(u => u.username)
-      expect(usernames).toContain(
-        user.username
-      )
+      const usernames = users.map((u) => u.username)
+      expect(usernames).toContain(user.username)
     })
 
     test('fails with a proper error if username is too short', async () => {
       const user = {
         username: 'ml',
-        password: 'secret'
+        password: 'secret',
       }
 
       const response = await api
@@ -221,14 +213,14 @@ describe('blogs api', () => {
         .expect('Content-Type', /application\/json/)
 
       expect(response.body.error).toContain(
-        '`username` (`ml`) is shorter than the minimum allowed length (3)'
+        '`username` (`ml`) is shorter than the minimum allowed length (3)',
       )
     })
 
     test('fails with a proper error if password is too short', async () => {
       const user = {
         username: 'mluukka',
-        password: 'se'
+        password: 'se',
       }
 
       const response = await api
@@ -237,9 +229,7 @@ describe('blogs api', () => {
         .expect(400)
         .expect('Content-Type', /application\/json/)
 
-      expect(response.body.error).toContain(
-        'Password is missing or too short'
-      )
+      expect(response.body.error).toContain('Password is missing or too short')
     })
 
     test('fails with a proper error if username not unique', async () => {
@@ -251,14 +241,12 @@ describe('blogs api', () => {
         .expect(400)
         .expect('Content-Type', /application\/json/)
 
-      expect(response.body.error).toContain(
-        'expected `username` to be unique.'
-      )
+      expect(response.body.error).toContain('expected `username` to be unique.')
     })
   })
-
 })
 
 afterAll(async () => {
   await mongoose.connection.close()
 })
+

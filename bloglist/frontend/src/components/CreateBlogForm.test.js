@@ -5,12 +5,11 @@ import userEvent from '@testing-library/user-event'
 import BlogForm from './CreateBlogForm'
 
 describe('create blog form', () => {
-
   test('return function called with correct information', async () => {
     const user = userEvent.setup()
     const mockBlog = jest.fn()
 
-    const { container } = render(<BlogForm addBlog={mockBlog}/>)
+    const { container } = render(<BlogForm addBlog={mockBlog} />)
 
     const title = container.querySelector('#title')
     const author = container.querySelector('#author')
@@ -27,6 +26,6 @@ describe('create blog form', () => {
     expect(mockBlog.mock.calls[0][0].title).toBe('form test')
     expect(mockBlog.mock.calls[0][0].author).toBe('dev')
     expect(mockBlog.mock.calls[0][0].url).toBe('this')
-
   })
 })
+

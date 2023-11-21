@@ -13,14 +13,14 @@ const errorHandler = (error, request, response, next) => {
     return response.status(400).json({ error: 'token missing or invalid' })
   } else if (error.name === 'TokenExpiredError') {
     return response.status(401).json({
-      error: 'token expired'
+      error: 'token expired',
     })
   }
 
   next(error)
 }
 
-const getTokenFrom = request => {
+const getTokenFrom = (request) => {
   const auth = request.get('authorization')
   if (auth && auth.toLowerCase().startsWith('bearer ')) {
     return auth.substring(7)
@@ -29,14 +29,12 @@ const getTokenFrom = request => {
 }
 
 const tokenExtractor = async (request, response, next) => {
-
   request.token = getTokenFrom(request)
 
   next()
 }
 
 const userExtractor = async (request, response, next) => {
-
   //Token perustainen autentikointi
   const token = getTokenFrom(request)
 
@@ -48,7 +46,6 @@ const userExtractor = async (request, response, next) => {
     }
 
     request.user = await User.findById(decodedToken.id)
-
   }
 
   next()
@@ -57,5 +54,6 @@ const userExtractor = async (request, response, next) => {
 module.exports = {
   errorHandler,
   tokenExtractor,
-  userExtractor
+  userExtractor,
 }
+

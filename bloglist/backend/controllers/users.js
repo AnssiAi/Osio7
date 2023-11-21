@@ -4,8 +4,12 @@ const User = require('../models/user')
 
 //Routet
 usersRouter.get('/', async (req, res) => {
-  const users = await User.find({})
-    .populate('blogs', { title: 1, author: 1, url: 1, likes: 1 })
+  const users = await User.find({}).populate('blogs', {
+    title: 1,
+    author: 1,
+    url: 1,
+    likes: 1,
+  })
   res.json(users)
 })
 
@@ -34,3 +38,4 @@ usersRouter.post('/', async (req, res) => {
 })
 
 module.exports = usersRouter
+

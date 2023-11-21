@@ -5,7 +5,7 @@ import userEvent from '@testing-library/user-event'
 import Blog from './Blog'
 
 const testUser = {
-  username: 'TestUser'
+  username: 'TestUser',
 }
 
 const testBlog = {
@@ -13,21 +13,19 @@ const testBlog = {
   author: 'Developer',
   url: 'console',
   likes: 12,
-  user: testUser
+  user: testUser,
 }
 
 describe('Blog', () => {
-
   let mockLikes = jest.fn()
 
   let container
 
   beforeEach(() => {
-    container = render(<Blog blog={testBlog} updLikes={mockLikes}/>).container
+    container = render(<Blog blog={testBlog} updLikes={mockLikes} />).container
   })
 
-  test('renders only title by default', ( ) => {
-
+  test('renders only title by default', () => {
     const div = container.querySelector('.blog')
     const hiddenDiv = container.querySelector('.hiddenContent')
 
@@ -35,9 +33,7 @@ describe('Blog', () => {
     expect(hiddenDiv).toHaveStyle('display: none')
   })
 
-
   test('render url and likes', async () => {
-
     const user = userEvent.setup()
     const button = screen.getByText('view')
     await user.click(button)
@@ -47,17 +43,15 @@ describe('Blog', () => {
     expect(div).toHaveTextContent(`${testBlog.url}`)
     expect(div).toHaveTextContent(`${testBlog.likes}`)
     expect(div).toHaveTextContent(`${testBlog.user.username}`)
-
   })
 
   test('like function called twice', async () => {
-
     const user = userEvent.setup()
     const button = screen.getByText('like')
     await user.click(button)
     await user.click(button)
 
     expect(mockLikes.mock.calls).toHaveLength(2)
-
   })
 })
+

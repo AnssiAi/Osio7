@@ -1,93 +1,61 @@
-const dummy = (blogs) => {
+const { groupBy } = require('lodash')
 
-  return blogs
-    ? 1
-    : 0
-}
+const dummy = (blogs) => 1
 
 const totalLikes = (blogs) => {
-
-  //0 = initialvalue, pakko olla jos käsittelee objekteja
-  //currentvalue pystyy ottamaan objektin ominaisuuden
-  return blogs.length === 0
-    ? 0
-    : blogs.reduce((accumulator, currentValue) => accumulator + currentValue.likes, 0)
+  return blogs.reduce((sum, blog) => blog.likes + sum, 0)
 }
 
 const favoriteBlog = (blogs) => {
-  //reducer saa kaksi objektia listassa edeltävän ja tämänhetkisen
-  const reducer = (prev, current) => {
-    return (prev.likes > current.likes)
-      ? prev
-      : current
+  if (blogs.length === 0) {
+    return undefined
   }
 
-  const foundObject = blogs.length === 0
-    ? null
-    : blogs.reduce(reducer, 0)
+  const { title, author, url, likes } = blogs.sort(
+    (b1, b2) => b2.likes - b1.likes,
+  )[0]
 
-  const returnObject = {
-    title: foundObject.title,
-    author: foundObject.author,
-    likes: foundObject.likes
-  }
-
-  return returnObject
+  return { title, author, url, likes }
 }
 
 const mostBlogs = (blogs) => {
-
-  //Muutetaan lista objektiksi joka sisältää nimen ja lukumäärän
-  const count = blogs.reduce((acc, curr) => {
-    const auth = curr.author
-    acc[auth] = (acc[auth] || 0) +1
-    return acc
-  }, {})
-
-  //Muutetaan objektin propertyt listaksi, jossa jokainen property on lista
-  const authList = Object.entries(count)
-
-  //Vertaillaan listan arvoja
-  const highestCount = authList.reduce((acc, curr) => {
-    return (acc[1] > curr[1])
-      ? acc
-      : curr
-  }, 0)
-
-  //Luodaan palautettava objekti
-  const returnObject = {
-    author: highestCount[0],
-    blogs: highestCount[1]
+  if (blogs.length === 0) {
+    return undefined
   }
 
-  return returnObject
+  const blogsByAuthor = groupBy(blogs, (blog) => blog.author)
+
+  const authorBlogs = Object.entries(blogsByAuthor).reduce(
+    (array, [author, blogList]) => {
+      return array.concat({
+        author,
+        blogs: blogList.length,
+      })
+    },
+    [],
+  )
+
+  return authorBlogs.sort((e1, e2) => e2.blogs - e1.blogs)[0]
 }
 
 const mostLikes = (blogs) => {
-
-  const object = blogs.reduce((acc, curr) => {
-    const auth = curr.author
-    const add = curr.likes
-
-    acc[auth] = (acc[auth] || 0) + add
-
-    return acc
-  }, {})
-
-  const listObject = Object.entries(object)
-
-  const highestLikes = listObject.reduce((acc, curr) => {
-    return (acc[1] > curr[1])
-      ? acc
-      :curr
-
-  }, 0)
-
-  const returnObject = {
-    author: highestLikes[0],
-    likes: highestLikes[1]
+  if (blogs.length === 0) {
+    return undefined
   }
-  return returnObject
+
+  const blogsByAuthor = groupBy(blogs, (blog) => blog.author)
+
+  const authorBlogs = Object.entries(blogsByAuthor).reduce(
+    (array, [author, blogList]) => {
+      return array.concat({
+        author,
+        likes: blogList.reduce((sum, blog) => sum + blog.likes, 0),
+      })
+    },
+    [],
+  )
+
+  return authorBlogs.sort((e1, e2) => e2.likes - e1.likes)[0]
 }
 
 module.exports = {
@@ -95,5 +63,6 @@ module.exports = {
   totalLikes,
   favoriteBlog,
   mostBlogs,
-  mostLikes
+  mostLikes,
 }
+

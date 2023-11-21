@@ -1,10 +1,7 @@
 import PropTypes from 'prop-types'
 import { useState } from 'react'
 
-const CreateBlogForm = ({
-  addBlog,
-}) => {
-
+const CreateBlogForm = ({ addBlog }) => {
   const [newTitle, setNewTitle] = useState('')
   const [newAuthor, setNewAuthor] = useState('')
   const [newUrl, setNewUrl] = useState('')
@@ -20,41 +17,42 @@ const CreateBlogForm = ({
     setNewTitle('')
     setNewAuthor('')
     setNewUrl('')
-
   }
 
   return (
     <div>
       <h2>create new</h2>
-      <form id="blog_form" onSubmit={createNewBlog}>
+      <form id='blog_form' onSubmit={createNewBlog}>
         <div>
-            title:
+          title:
           <input
             value={newTitle}
-            onChange={event => setNewTitle(event.target.value)}
-            id="title"
-            type="text"
+            onChange={(event) => setNewTitle(event.target.value)}
+            id='title'
+            type='text'
           />
         </div>
         <div>
-            author:
+          author:
           <input
             value={newAuthor}
-            onChange={event => setNewAuthor(event.target.value)}
-            id="author"
-            type="text"
+            onChange={(event) => setNewAuthor(event.target.value)}
+            id='author'
+            type='text'
           />
         </div>
         <div>
-            url:
+          url:
           <input
             value={newUrl}
-            onChange={event => setNewUrl(event.target.value)}
-            id="url"
-            type="text"
+            onChange={(event) => setNewUrl(event.target.value)}
+            id='url'
+            type='text'
           />
         </div>
-        <button id='create-btn' type="submit">create</button>
+        <button id='create-btn' type='submit'>
+          create
+        </button>
       </form>
     </div>
   )
@@ -65,3 +63,4 @@ CreateBlogForm.propTypes = {
 }
 
 export default CreateBlogForm
+

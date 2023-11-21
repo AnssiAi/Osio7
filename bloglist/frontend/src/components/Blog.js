@@ -6,7 +6,7 @@ const Blog = ({ blog, updLikes, delBlog, user }) => {
     paddingLeft: 2,
     border: 'solid',
     borderWidth: 1,
-    marginBottom: 5
+    marginBottom: 5,
   }
 
   const [visible, setVisible] = useState(false)
@@ -24,19 +24,24 @@ const Blog = ({ blog, updLikes, delBlog, user }) => {
   }
 
   return (
-    <div style={blogStyle} >
+    <div style={blogStyle}>
       <div className='blog'>
         {blog.title} {blog.author}
-        <button id='view-btn' onClick = {handleVisibleChange}>view</button>
+        <button id='view-btn' onClick={handleVisibleChange}>
+          view
+        </button>
       </div>
       <div style={showWhenVisible} className='hiddenContent'>
         <div>
-          url: <a href={`${blog.url}`}>{blog.url}</a> <br/>
+          url: <a href={`${blog.url}`}>{blog.url}</a> <br />
           likes: {blog.likes}
-          <button id='like-btn' onClick = {((e) => updLikes(e, blog))}>like</button> <br/>
-          user: {blog.user.username} <br/>
+          <button id='like-btn' onClick={(e) => updLikes(e, blog)}>
+            like
+          </button>{' '}
+          <br />
+          user: {blog.user.username} <br />
           <div style={showWhenAuthorized} className='authorizedContent'>
-            <button onClick = {((e) => delBlog(e, blog.id))}>remove</button>
+            <button onClick={(e) => delBlog(e, blog.id)}>remove</button>
           </div>
         </div>
       </div>
@@ -47,3 +52,4 @@ const Blog = ({ blog, updLikes, delBlog, user }) => {
 Blog.displayName = 'blog'
 
 export default Blog
+

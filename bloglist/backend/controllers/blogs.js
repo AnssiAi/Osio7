@@ -5,18 +5,16 @@ const { userExtractor } = require('../utils/middleware')
 
 //Haku kaikki
 blogsRouter.get('/', async (request, response) => {
-
-  const blogs = await Blog
-    .find({})
-    .populate('user', { username: 1, name: 1 })
+  const blogs = await Blog.find({}).populate('user', { username: 1, name: 1 })
 
   response.json(blogs)
 })
 
 blogsRouter.get('/:id', async (req, res) => {
-  const blogById = await Blog
-    .findById(req.params.id)
-    .populate('user', { username: 1, name: 1 })
+  const blogById = await Blog.findById(req.params.id).populate('user', {
+    username: 1,
+    name: 1,
+  })
 
   if (blogById) {
     res.json(blogById)
@@ -30,7 +28,7 @@ blogsRouter.post('/', userExtractor, async (request, response) => {
   const body = request.body
 
   const user = request.user
-  if(!user) {
+  if (!user) {
     return response.status(401).json({ error: 'Unauthorized' })
   }
 
@@ -39,7 +37,7 @@ blogsRouter.post('/', userExtractor, async (request, response) => {
     author: body.author,
     url: body.url,
     likes: body.likes || 0,
-    user: user._id
+    user: user._id,
   })
 
   const savedBlog = await blog.save()
@@ -47,7 +45,6 @@ blogsRouter.post('/', userExtractor, async (request, response) => {
   await user.save()
 
   response.status(201).json(savedBlog)
-
 })
 
 //Muokkaus
@@ -61,13 +58,14 @@ blogsRouter.put('/:id', async (req, res) => {
     likes: body.likes,
   }
 
-  const updBlog = await Blog.findByIdAndUpdate(req.params.id, blog, { new: true })
+  const updBlog = await Blog.findByIdAndUpdate(req.params.id, blog, {
+    new: true,
+  })
   res.status(200).json(updBlog)
 })
 
 //Poisto
-blogsRouter.delete('/:id',userExtractor, async (req, res) => {
-
+blogsRouter.delete('/:id', userExtractor, async (req, res) => {
   const blog = await Blog.findById(req.params.id)
 
   const user = req.user
@@ -77,8 +75,9 @@ blogsRouter.delete('/:id',userExtractor, async (req, res) => {
   }
 
   if (blog.user.toString() === user._id.toString()) {
-
-    user.blogs = user.blogs.filter( obj => obj.toString() !== blog.id.toString())
+    user.blogs = user.blogs.filter(
+      (obj) => obj.toString() !== blog.id.toString(),
+    )
     await user.save()
 
     await blog.deleteOne()
@@ -87,7 +86,7 @@ blogsRouter.delete('/:id',userExtractor, async (req, res) => {
   } else {
     res.status(401).json({ error: 'invalid token' })
   }
-
 })
 
 module.exports = blogsRouter
+
