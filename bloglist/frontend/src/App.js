@@ -35,7 +35,6 @@ const App = () => {
         <CreateBlogForm />
       </Togglable>
 
-      <br />
       <BlogList />
     </div>
   )
