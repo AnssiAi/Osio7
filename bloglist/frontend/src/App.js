@@ -7,6 +7,7 @@ import CreateBlogForm from './components/CreateBlogForm'
 import Togglable from './components/Togglable'
 import LoginForm from './components/LoginForm'
 import BlogList from './components/BlogList'
+import UserList from './components/UserList'
 
 const App = () => {
   const user = useUserValue()
@@ -35,6 +36,7 @@ const App = () => {
         <CreateBlogForm />
       </Togglable>
 
+      <UserList />
       <BlogList />
     </div>
   )
