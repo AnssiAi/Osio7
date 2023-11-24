@@ -1,9 +1,11 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useNotificationDispatch } from './NotificationContext'
 import { updateBlog, removeBlog } from '../services/blogService'
+import { useUserValue } from './UserContext'
+import { useNavigate } from 'react-router-dom'
 
-const Blog = ({ blog, user }) => {
+const Blog = ({ blog }) => {
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -12,22 +14,22 @@ const Blog = ({ blog, user }) => {
     marginBottom: 5,
   }
 
-  const [visible, setVisible] = useState(false)
   const [authorized, setAuthorized] = useState(false)
 
+  const user = useUserValue()
   const queryClient = useQueryClient()
   const dispatch = useNotificationDispatch()
+  const navigate = useNavigate()
 
-  const showWhenVisible = { display: visible ? '' : 'none' }
   const showWhenAuthorized = { display: authorized ? '' : 'none' }
 
-  const handleVisibleChange = (event) => {
-    setVisible(!visible)
-
-    if (user === blog.user.username) {
+  useEffect(() => {
+    if (user.username === blog.user.username) {
       setAuthorized(true)
+    } else {
+      setAuthorized(false)
     }
-  }
+  }, [])
 
   const voteUpMutation = useMutation({
     mutationFn: updateBlog,
@@ -39,7 +41,10 @@ const Blog = ({ blog, user }) => {
   const deleteMutation = useMutation({
     mutationFn: removeBlog,
     onSuccess: () => {
+      navigate('/')
       queryClient.invalidateQueries({ queryKey: ['blogs'] })
+      queryClient.invalidateQueries({ queryKey: ['users'] })
+
       dispatch({
         type: 'SHOW',
         payload: `you deleted ${blog.title} by ${blog.author}`,
@@ -66,28 +71,23 @@ const Blog = ({ blog, user }) => {
       deleteMutation.mutate(blog)
     }
   }
-
+  if (!blog) {
+    return null
+  }
   return (
-    <div style={blogStyle}>
-      <div className='blog'>
-        {blog.title} {blog.author}
-        <button id='view-btn' onClick={handleVisibleChange}>
-          view
-        </button>
-      </div>
-      <div style={showWhenVisible} className='hiddenContent'>
-        <div>
-          url: <a href={`${blog.url}`}>{blog.url}</a> <br />
-          likes: {blog.likes}
-          <button id='like-btn' onClick={(e) => handleVote(blog)}>
-            like
-          </button>{' '}
-          <br />
-          user: {blog.user.username} <br />
-          <div style={showWhenAuthorized} className='authorizedContent'>
-            <button onClick={(e) => handleDel(blog)}>remove</button>
-          </div>
-        </div>
+    <div style={blogStyle} className='blog'>
+      <h2>
+        {blog.title} by {blog.author}
+      </h2>
+      url: <a href={`${blog.url}`}>{blog.url}</a> <br />
+      likes: {blog.likes}
+      <button id='like-btn' onClick={(e) => handleVote(blog)}>
+        like
+      </button>
+      <br />
+      added by: {blog.user.username}
+      <div style={showWhenAuthorized} className='authorizedContent'>
+        <button onClick={(e) => handleDel(blog)}>remove</button>
       </div>
     </div>
   )

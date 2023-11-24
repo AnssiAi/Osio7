@@ -1,18 +1,57 @@
-import { useRef } from 'react'
-import { useUserValue } from './components/UserContext'
-
+import { useUserValue, useUserDispatch } from './components/UserContext'
 import { logout } from './services/loginService'
-import Notification from './components/Notification'
-import CreateBlogForm from './components/CreateBlogForm'
-import Togglable from './components/Togglable'
-import LoginForm from './components/LoginForm'
+import { useQuery } from '@tanstack/react-query'
+import { getUsers } from './services/userService'
+import { getAll } from './services/blogService'
+import { Routes, Route, useMatch, Link } from 'react-router-dom'
+
+import Blog from './components/Blog'
+import Author from './components/Author'
+import AuthorList from './components/AuthorList'
 import BlogList from './components/BlogList'
-import UserList from './components/UserList'
+import Notification from './components/Notification'
+import LoginForm from './components/LoginForm'
 
 const App = () => {
-  const user = useUserValue()
+  const padding = {
+    paddingRight: 5,
+  }
 
-  const blogFormRef = useRef()
+  const user = useUserValue()
+  const matchAuthor = useMatch('/users/:id')
+  const matchBlog = useMatch('/blogs/:id')
+
+  //Queryt App:ssa, jotta Routeille voidaan määrittää oikeat parametrit
+  const authorRes = useQuery({
+    queryKey: ['users'],
+    queryFn: getUsers,
+    retry: 1,
+    refetchOnWindowFocus: false,
+  })
+
+  const blogRes = useQuery({
+    queryKey: ['blogs'],
+    queryFn: getAll,
+    retry: 1,
+    refetchOnWindowFocus: false,
+  })
+
+  if (authorRes.isPending || blogRes.isPending) {
+    return <span>loading data</span>
+  }
+  if (authorRes.isError || blogRes.isError) {
+    return <span>user service not available due to server problem</span>
+  }
+
+  const blogs = blogRes.data
+  const authors = authorRes.data
+
+  const author = matchAuthor
+    ? authors.find((u) => u.id === matchAuthor.params.id)
+    : null
+  const blog = matchBlog
+    ? blogs.find((b) => b.id === matchBlog.params.id)
+    : null
 
   if (user === null) {
     return (
@@ -27,17 +66,24 @@ const App = () => {
     <div>
       <Notification />
 
-      <h2>blogs</h2>
+      <div>
+        <Link style={padding} to='/blogs'>
+          blogs
+        </Link>
+        <Link style={padding} to='/users'>
+          users
+        </Link>
+        logged in as: {user.username}
+        <button onClick={() => logout()}>logout</button>
+      </div>
 
-      <p>logged in as: {user.username}</p>
-      <button onClick={() => logout()}>logout</button>
-
-      <Togglable buttonLabel='create new' ref={blogFormRef}>
-        <CreateBlogForm />
-      </Togglable>
-
-      <UserList />
-      <BlogList />
+      <Routes>
+        <Route path='/users' element={<AuthorList authors={authors} />} />
+        <Route path='/users/:id' element={<Author author={author} />} />
+        <Route path='/blogs/:id' element={<Blog blog={blog} />} />
+        <Route path='/blogs' element={<BlogList blogs={blogs} />} />
+        <Route path='/' element={<BlogList blogs={blogs} />} />
+      </Routes>
     </div>
   )
 }

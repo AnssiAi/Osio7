@@ -2,10 +2,12 @@ import { login } from '../services/loginService'
 import { setToken } from '../services/blogService'
 import { useNotificationDispatch } from './NotificationContext'
 import { useUserDispatch } from './UserContext'
+import { useNavigate } from 'react-router-dom'
 
 const LoginForm = () => {
   const sendDispatch = useNotificationDispatch()
   const userDispatch = useUserDispatch()
+  const navigate = useNavigate()
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -21,6 +23,8 @@ const LoginForm = () => {
 
       window.localStorage.setItem('loggedNoteappUser', JSON.stringify(user))
       setToken(user.token)
+
+      navigate('/')
 
       userDispatch({ type: 'SET', payload: user })
       event.target.username.value = ''

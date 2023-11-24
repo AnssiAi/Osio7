@@ -19,6 +19,7 @@ const CreateBlogForm = () => {
     },
     onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: ['blogs'] })
+      queryClient.invalidateQueries({ queryKey: ['users'] })
       dispatch({
         type: 'SHOW',
         payload: `new blog ${response.title} by ${response.author} created`,

@@ -1,33 +1,24 @@
-import { useQuery } from '@tanstack/react-query'
-import { getAll } from '../services/blogService'
-import { useUserValue } from './UserContext'
+import { useRef } from 'react'
+import { Link } from 'react-router-dom'
 
-import Blog from './Blog'
+import CreateBlogForm from './CreateBlogForm'
+import Togglable from './Togglable'
 
-const BlogList = () => {
-  const user = useUserValue()
-  //Haetaan blogit palvelimelta
-  const result = useQuery({
-    queryKey: ['blogs'],
-    queryFn: getAll,
-    retry: 1,
-    refetchOnWindowFocus: false,
-  })
-  //Viestit odottaessa ja virheen tapahtuessa
-  if (result.isPending) {
-    return <span>Loading data</span>
-  }
-  if (result.isError) {
-    return <span>blog service not available due to server problem</span>
-  }
-  //Haetut blogit
-  const blogs = result.data
-
+const BlogList = ({ blogs }) => {
+  const blogFormRef = useRef()
   return (
     <div>
-      {blogs.map((blog) => (
-        <Blog key={blog.id} blog={blog} user={user.username} />
-      ))}
+      <h2>Blogs</h2>
+      <Togglable buttonLabel='create new' ref={blogFormRef}>
+        <CreateBlogForm />
+      </Togglable>
+      <ul>
+        {blogs.map((b) => (
+          <li key={b.id}>
+            <Link to={`/blogs/${b.id}`}>{b.title}</Link>
+          </li>
+        ))}
+      </ul>
     </div>
   )
 }
