@@ -89,6 +89,12 @@ const Blog = ({ blog }) => {
       <div style={showWhenAuthorized} className='authorizedContent'>
         <button onClick={(e) => handleDel(blog)}>remove</button>
       </div>
+      <h3>comments</h3>
+      <ul>
+        {blog.comments.map((comment) => (
+          <li key={comment.id}>{comment.content}</li>
+        ))}
+      </ul>
     </div>
   )
 }

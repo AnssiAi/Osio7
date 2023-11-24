@@ -37,6 +37,7 @@ blogsRouter.post('/', userExtractor, async (request, response) => {
     author: body.author,
     url: body.url,
     likes: body.likes || 0,
+    comments: [],
     user: user._id,
   })
 
@@ -45,6 +46,16 @@ blogsRouter.post('/', userExtractor, async (request, response) => {
   await user.save()
 
   response.status(201).json(savedBlog)
+})
+//Kommentin lisäys
+blogsRouter.post('/:id/comments', async (request, response) => {
+  const comment = request.body
+
+  const commentBlog = await Blog.findById(request.params.id)
+
+  commentBlog.comments = commentBlog.comments.concat(comment)
+  await commentBlog.save()
+  response.status(200).json(commentBlog)
 })
 
 //Muokkaus
@@ -56,6 +67,7 @@ blogsRouter.put('/:id', async (req, res) => {
     author: body.author,
     url: body.url,
     likes: body.likes,
+    comments: body.comments,
   }
 
   const updBlog = await Blog.findByIdAndUpdate(req.params.id, blog, {

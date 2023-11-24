@@ -2,7 +2,7 @@ import { useUserValue, useUserDispatch } from './components/UserContext'
 import { logout } from './services/loginService'
 import { useQuery } from '@tanstack/react-query'
 import { getUsers } from './services/userService'
-import { getAll } from './services/blogService'
+import { getAll, setToken } from './services/blogService'
 import { Routes, Route, useMatch, Link } from 'react-router-dom'
 
 import Blog from './components/Blog'
@@ -11,11 +11,23 @@ import AuthorList from './components/AuthorList'
 import BlogList from './components/BlogList'
 import Notification from './components/Notification'
 import LoginForm from './components/LoginForm'
+import { useEffect } from 'react'
 
 const App = () => {
   const padding = {
     paddingRight: 5,
   }
+
+  const userDispatch = useUserDispatch()
+
+  useEffect(() => {
+    const loggedUser = window.localStorage.getItem('loggedBlogappUser')
+    if (loggedUser) {
+      const foundUser = JSON.parse(loggedUser)
+      userDispatch({ type: 'SET', payload: foundUser })
+      setToken(foundUser.token)
+    }
+  }, [])
 
   const user = useUserValue()
   const matchAuthor = useMatch('/users/:id')

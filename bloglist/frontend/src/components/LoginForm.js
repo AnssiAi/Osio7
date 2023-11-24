@@ -21,14 +21,14 @@ const LoginForm = () => {
         password,
       })
 
-      window.localStorage.setItem('loggedNoteappUser', JSON.stringify(user))
+      window.localStorage.setItem('loggedBlogappUser', JSON.stringify(user))
       setToken(user.token)
-
-      navigate('/')
 
       userDispatch({ type: 'SET', payload: user })
       event.target.username.value = ''
       event.target.password.value = ''
+
+      navigate('/')
 
       sendDispatch({ type: 'SHOW', payload: `logged in as ${username}` })
       setTimeout(() => {

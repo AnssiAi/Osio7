@@ -7,7 +7,7 @@ const login = async (credentials) => {
 }
 
 const logout = (event) => {
-  window.localStorage.removeItem('loggedNoteappUser')
+  window.localStorage.removeItem('loggedBlogappUser')
   window.location.reload()
 }
 
