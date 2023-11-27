@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useNotificationDispatch } from './NotificationContext'
-import { updateBlog, removeBlog } from '../services/blogService'
+import { updateBlog, removeBlog, commentBlog } from '../services/blogService'
 import { useUserValue } from './UserContext'
 import { useNavigate } from 'react-router-dom'
 
@@ -33,7 +33,7 @@ const Blog = ({ blog }) => {
 
   const voteUpMutation = useMutation({
     mutationFn: updateBlog,
-    onSuccess: () => {
+    onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: ['blogs'] })
     },
   })
@@ -43,7 +43,6 @@ const Blog = ({ blog }) => {
     onSuccess: () => {
       navigate('/')
       queryClient.invalidateQueries({ queryKey: ['blogs'] })
-      queryClient.invalidateQueries({ queryKey: ['users'] })
 
       dispatch({
         type: 'SHOW',
@@ -55,7 +54,7 @@ const Blog = ({ blog }) => {
     },
   })
 
-  const handleVote = (blog) => {
+  const handleVote = () => {
     voteUpMutation.mutate({ ...blog, likes: blog.likes + 1 })
     dispatch({
       type: 'SHOW',
@@ -71,6 +70,22 @@ const Blog = ({ blog }) => {
       deleteMutation.mutate(blog)
     }
   }
+
+  const commentMutation = useMutation({
+    mutationFn: commentBlog,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['blogs'] })
+    },
+  })
+  const newComment = (event) => {
+    event.preventDefault()
+    const comment = {
+      content: event.target.comment.value,
+    }
+    event.target.comment.value = ''
+    commentMutation.mutate({ id: blog.id, comment: comment })
+  }
+
   if (!blog) {
     return null
   }
@@ -81,7 +96,7 @@ const Blog = ({ blog }) => {
       </h2>
       url: <a href={`${blog.url}`}>{blog.url}</a> <br />
       likes: {blog.likes}
-      <button id='like-btn' onClick={(e) => handleVote(blog)}>
+      <button id='like-btn' onClick={(e) => handleVote()}>
         like
       </button>
       <br />
@@ -90,9 +105,15 @@ const Blog = ({ blog }) => {
         <button onClick={(e) => handleDel(blog)}>remove</button>
       </div>
       <h3>comments</h3>
+      <form id='comment_form' onSubmit={newComment}>
+        <input name='comment' />
+        <button id='comment-btn' type='submit'>
+          add comment
+        </button>
+      </form>
       <ul>
         {blog.comments.map((comment) => (
-          <li key={comment.id}>{comment.content}</li>
+          <li key={comment.content}>{comment.content}</li>
         ))}
       </ul>
     </div>
