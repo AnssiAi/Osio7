@@ -1,0 +1,277 @@
+/*Globaalit*/
+html,
+body {
+  place-content: center;
+  background: linear-gradient(320deg, #df7373 50%, #da5552 70%);
+  margin: 0;
+  padding: 0;
+
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  height: 100%;
+  width: 100%;
+}
+
+input,
+textarea,
+select,
+button {
+  width: 200px;
+  padding: 0.5em;
+  box-sizing: border-box;
+  border-style: none;
+  border-bottom: solid #df7373;
+}
+
+button {
+  border-radius: 10px;
+  font-weight: bold;
+}
+
+button:hover {
+  color: white;
+  background-color: #df7373;
+}
+
+table,
+th,
+tr {
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 18px;
+
+  height: 2.5em;
+}
+
+label {
+  display: inline-block;
+  padding: 0.5em;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+input:focus {
+  border-radius: 5px;
+}
+
+/*Luokkakohtaiset*/
+.appContainer {
+  display: grid;
+  grid-template-columns: 1fr 5fr 1fr;
+  grid-template-rows: 0.3fr 0.2fr 5fr;
+
+  width: 100%;
+  height: 100%;
+}
+
+.notification {
+  grid-column: 2;
+  grid-row: 2;
+  padding: 0.5em;
+
+  text-align: center;
+  font-size: 18px;
+  font-weight: bold;
+  color: white;
+  background-color: #3066be;
+  border-radius: 10px;
+}
+
+.loginFormContainer {
+  grid-column: 2;
+  grid-row: 3;
+  width: 45%;
+  height: 35%;
+  background-color: white;
+  border-radius: 10px;
+  justify-self: center;
+
+  display: grid;
+  grid-template-rows: 1fr 10fr 1fr;
+  grid-template-columns: 1fr 10fr 1fr;
+}
+
+.loginFormContainer h2 {
+  color: #df7373;
+  font-size: 30px;
+}
+
+.loginPlacement {
+  grid-column: 2;
+  grid-row: 2;
+
+  display: grid;
+  text-align: center;
+}
+
+.loginForm {
+  display: grid;
+  grid-template-columns: max-content max-content;
+  grid-gap: 5px;
+
+  justify-self: center;
+}
+
+.loginForm button {
+  font-size: 18px;
+  font-weight: 700;
+  margin-top: 1em;
+
+  grid-column: span 2;
+  justify-self: center;
+  color: white;
+  background-color: blue;
+  border-bottom: solid darkblue;
+  border-radius: 10px;
+}
+
+.loginForm button:hover {
+  background-color: green;
+  border-bottom: solid darkgreen;
+}
+
+.appContent {
+  grid-column: 2;
+  grid-row: 3;
+  background-color: white;
+  border-radius: 10px;
+  padding: 1%;
+}
+
+.navbar {
+  grid-column: span 3;
+  grid-row: 1;
+
+  background-color: #00171f;
+
+  display: grid;
+  grid-template-columns: repeat(4, 200px);
+  text-align: center;
+  align-content: center;
+  justify-content: center;
+  height: stretch;
+}
+
+.navbar label {
+  color: white;
+}
+
+.navbar a {
+  display: inline-block;
+  padding: 0.7em;
+  font-size: 16px;
+  font-weight: bold;
+  color: white;
+  text-decoration: none;
+}
+
+.navbar a:hover {
+  background-color: #da5552;
+}
+
+.navbar button {
+  background-color: white;
+  border-radius: 0px;
+  align-self: end;
+
+  font-size: 16px;
+  font-weight: 600;
+}
+.navbar button:hover {
+  color: white;
+  background-color: #df7373;
+}
+
+.formContainer {
+  max-width: max-content;
+  background-color: #dddfdf;
+  border-radius: 10px;
+
+  display: grid;
+  grid-template-columns: 10px max-content 10px;
+  grid-template-rows: max-content max-content 10px;
+}
+.formContainer h3 {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.blogForm {
+  grid-column: 2;
+  grid-row: 2;
+
+  display: grid;
+  grid-template-columns: max-content max-content;
+  grid-gap: 5px;
+  text-align: right;
+}
+
+.blogForm button {
+  grid-column: span 2;
+}
+
+.commentForm {
+  grid-column: 2;
+  grid-row: 2;
+
+  display: grid;
+  grid-template-columns: max-content max-content;
+  grid-gap: 5px;
+  text-align: right;
+}
+
+.listContainer ul {
+  margin-left: 0px;
+  padding-left: 0px;
+  list-style: none;
+}
+
+.listContainer li {
+  line-height: 2.5;
+  font-size: 18px;
+}
+
+.listContainer a {
+  text-decoration: none;
+  color: black;
+}
+
+.listContainer a:hover {
+  border-bottom: solid #df7373;
+}
+
+.listContainer table {
+  table-layout: fixed;
+  width: 25%;
+}
+
+.blogContainer {
+  display: grid;
+
+  grid-template-rows: max-content max-content max-content;
+  grid-gap: 10px;
+}
+
+.blogInfo {
+  display: grid;
+  grid-template-columns: max-content max-content;
+  grid-gap: 3px;
+
+  align-items: center;
+}
+
+.blogInfo label {
+  grid-column: 1;
+}
+
+.blogInfo button {
+  grid-column: span 2;
+}
+
+.blogInfo .authorizedContent {
+  grid-column: span 2;
+}
+
+.commentContainer li {
+  line-height: 2;
+  font-size: 16px;
+}

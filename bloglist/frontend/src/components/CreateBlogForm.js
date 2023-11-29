@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { createNew } from '../services/blogService'
 import { useNotificationDispatch } from './NotificationContext'
+import '../style/AppStyle.css'
 
 const CreateBlogForm = () => {
   const dispatch = useNotificationDispatch()
@@ -18,8 +19,7 @@ const CreateBlogForm = () => {
       }, 5000)
     },
     onSuccess: (response) => {
-      const blogs = queryClient.getQueryData(['blogs'])
-      queryClient.setQueryData(['blogs'], blogs.concat(response))
+      queryClient.invalidateQueries(['blogs'])
       dispatch({
         type: 'SHOW',
         payload: `new blog ${response.title} by ${response.author} created`,
@@ -42,21 +42,18 @@ const CreateBlogForm = () => {
   }
 
   return (
-    <div>
-      <h2>create new</h2>
-      <form id='blog_form' onSubmit={createNewBlog}>
-        <div>
-          title:
-          <input name='title' />
-        </div>
-        <div>
-          author:
-          <input name='author' />
-        </div>
-        <div>
-          url:
-          <input name='url' />
-        </div>
+    <div className='formContainer'>
+      <h3>create new</h3>
+      <form className='blogForm' onSubmit={createNewBlog}>
+        <label>title:</label>
+        <input name='title' />
+
+        <label>author:</label>
+        <input name='author' />
+
+        <label>url:</label>
+        <input name='url' />
+
         <button id='create-btn' type='submit'>
           create
         </button>

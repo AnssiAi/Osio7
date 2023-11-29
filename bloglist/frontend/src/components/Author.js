@@ -1,4 +1,4 @@
-import Blog from './Blog'
+import '../style/AppStyle.css'
 
 const Author = ({ author }) => {
   //Haetaan blogit?
@@ -6,7 +6,7 @@ const Author = ({ author }) => {
     return null
   }
   return (
-    <div>
+    <div className='listContainer'>
       <h2>{author.name}</h2>
       <h3>added blogs</h3>
       <ul>

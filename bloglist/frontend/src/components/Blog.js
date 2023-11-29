@@ -4,16 +4,9 @@ import { useNotificationDispatch } from './NotificationContext'
 import { updateBlog, removeBlog, commentBlog } from '../services/blogService'
 import { useUserValue } from './UserContext'
 import { useNavigate } from 'react-router-dom'
+import '../style/AppStyle.css'
 
 const Blog = ({ blog }) => {
-  const blogStyle = {
-    paddingTop: 10,
-    paddingLeft: 2,
-    border: 'solid',
-    borderWidth: 1,
-    marginBottom: 5,
-  }
-
   const [authorized, setAuthorized] = useState(false)
 
   const user = useUserValue()
@@ -43,6 +36,7 @@ const Blog = ({ blog }) => {
     onSuccess: () => {
       navigate('/')
       queryClient.invalidateQueries({ queryKey: ['blogs'] })
+      queryClient.invalidateQueries({ queryKey: ['users'] })
 
       dispatch({
         type: 'SHOW',
@@ -90,32 +84,49 @@ const Blog = ({ blog }) => {
     return null
   }
   return (
-    <div style={blogStyle} className='blog'>
+    <div className='blogContainer'>
       <h2>
         {blog.title} by {blog.author}
       </h2>
-      url: <a href={`${blog.url}`}>{blog.url}</a> <br />
-      likes: {blog.likes}
-      <button id='like-btn' onClick={(e) => handleVote()}>
-        like
-      </button>
-      <br />
-      added by: {blog.user.username}
-      <div style={showWhenAuthorized} className='authorizedContent'>
-        <button onClick={(e) => handleDel(blog)}>remove</button>
-      </div>
-      <h3>comments</h3>
-      <form id='comment_form' onSubmit={newComment}>
-        <input name='comment' />
-        <button id='comment-btn' type='submit'>
-          add comment
+      <div className='blogInfo'>
+        <label>url:</label>
+        <a href={`${blog.url}`}>{blog.url}</a> <br />
+        <label>likes:</label>
+        <p>{blog.likes}</p>
+        <button
+          className='submit-btn'
+          id='like-btn'
+          onClick={(e) => handleVote()}
+        >
+          like
         </button>
-      </form>
-      <ul>
-        {blog.comments.map((comment) => (
-          <li key={comment.content}>{comment.content}</li>
-        ))}
-      </ul>
+        <label>added by:</label>
+        <p>{blog.user.username}</p>
+        <div style={showWhenAuthorized} className='authorizedContent'>
+          <button className='del-btn' onClick={(e) => handleDel(blog)}>
+            remove
+          </button>
+        </div>
+      </div>
+
+      <div>
+        <div className='formContainer'>
+          <h3>comments</h3>
+          <form className='commentForm' onSubmit={newComment}>
+            <input name='comment' />
+            <button className='submit-btn' id='comment-btn' type='submit'>
+              add comment
+            </button>
+          </form>
+        </div>
+        <div className='commentContainer'>
+          <ul>
+            {blog.comments.map((comment) => (
+              <li key={comment.content}>{comment.content}</li>
+            ))}
+          </ul>
+        </div>
+      </div>
     </div>
   )
 }

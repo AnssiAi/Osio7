@@ -4,6 +4,7 @@ import { useQuery } from '@tanstack/react-query'
 import { getUsers } from './services/userService'
 import { getAll, setToken } from './services/blogService'
 import { Routes, Route, useMatch, Link } from 'react-router-dom'
+import './style/AppStyle.css'
 
 import Blog from './components/Blog'
 import Author from './components/Author'
@@ -67,7 +68,7 @@ const App = () => {
 
   if (user === null) {
     return (
-      <div>
+      <div className='appContainer'>
         <Notification />
         <LoginForm />
       </div>
@@ -75,27 +76,29 @@ const App = () => {
   }
 
   return (
-    <div>
-      <Notification />
-
-      <div>
+    <div className='appContainer'>
+      <div className='navbar'>
         <Link style={padding} to='/blogs'>
           blogs
         </Link>
         <Link style={padding} to='/users'>
           users
         </Link>
-        logged in as: {user.username}
+        <label>logged in as: {user.username}</label>
         <button onClick={() => logout()}>logout</button>
       </div>
 
-      <Routes>
-        <Route path='/users' element={<AuthorList authors={authors} />} />
-        <Route path='/users/:id' element={<Author author={author} />} />
-        <Route path='/blogs/:id' element={<Blog blog={blog} />} />
-        <Route path='/blogs' element={<BlogList blogs={blogs} />} />
-        <Route path='/' element={<BlogList blogs={blogs} />} />
-      </Routes>
+      <Notification />
+
+      <div className='appContent'>
+        <Routes>
+          <Route path='/users' element={<AuthorList authors={authors} />} />
+          <Route path='/users/:id' element={<Author author={author} />} />
+          <Route path='/blogs/:id' element={<Blog blog={blog} />} />
+          <Route path='/blogs' element={<BlogList blogs={blogs} />} />
+          <Route path='/' element={<BlogList blogs={blogs} />} />
+        </Routes>
+      </div>
     </div>
   )
 }

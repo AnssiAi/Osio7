@@ -1,8 +1,9 @@
 import { Link } from 'react-router-dom'
+import '../style/AppStyle.css'
 
 const AuthorList = ({ authors }) => {
   return (
-    <div>
+    <div className='listContainer'>
       <h2>Users</h2>
       <table>
         <thead>

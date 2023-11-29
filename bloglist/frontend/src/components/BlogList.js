@@ -3,11 +3,12 @@ import { Link } from 'react-router-dom'
 
 import CreateBlogForm from './CreateBlogForm'
 import Togglable from './Togglable'
+import '../style/AppStyle.css'
 
 const BlogList = ({ blogs }) => {
   const blogFormRef = useRef()
   return (
-    <div>
+    <div className='listContainer'>
       <h2>Blogs</h2>
       <Togglable buttonLabel='create new' ref={blogFormRef}>
         <CreateBlogForm />

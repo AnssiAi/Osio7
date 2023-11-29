@@ -3,6 +3,7 @@ import { setToken } from '../services/blogService'
 import { useNotificationDispatch } from './NotificationContext'
 import { useUserDispatch } from './UserContext'
 import { useNavigate } from 'react-router-dom'
+import '../style/AppStyle.css'
 
 const LoginForm = () => {
   const sendDispatch = useNotificationDispatch()
@@ -43,21 +44,22 @@ const LoginForm = () => {
   }
 
   return (
-    <div>
-      <h2>Log in to application</h2>
-      <form onSubmit={handleLogin}>
-        <div>
-          username
+    <div className='loginFormContainer'>
+      <div className='loginPlacement'>
+        <h2>Log in to application</h2>
+
+        <form className='loginForm' onSubmit={handleLogin}>
+          <label>username</label>
           <input id='username' name='username' />
-        </div>
-        <div>
-          password
+
+          <label>password</label>
           <input id='password' name='password' />
-        </div>
-        <button id='login-btn' type='submit'>
-          login
-        </button>
-      </form>
+
+          <button id='login-btn' type='submit'>
+            login
+          </button>
+        </form>
+      </div>
     </div>
   )
 }
